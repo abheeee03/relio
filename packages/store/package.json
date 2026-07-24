@@ -6,6 +6,9 @@
   },
   "type": "module",
   "private": true,
+  "scripts": {
+    "build": "prisma generate"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
