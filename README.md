@@ -2,6 +2,10 @@
 
 #### Relio is an uptime monitoring platform that keeps an eye on your websites from multiple regions worldwide. Get instant alerts when your site goes down, track response times, and view detailed ping history. To know more read this [blog](https://abhee.dev/blog/relio-montior-websites)
 
+## Demo
+
+https://github.com/user-attachments/assets/f2ba2042-e96a-46a3-8f1a-33db70854660
+
 ## Features
 
 -  **Global Monitoring** - Workers from different regions (countries) ping your sites
