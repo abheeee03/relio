@@ -7,7 +7,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "prisma generate"
+    "postinstall": "prisma generate"
   },
   "devDependencies": {
     "@types/bun": "latest"
