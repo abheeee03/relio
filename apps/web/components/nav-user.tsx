@@ -29,6 +29,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { Skeleton } from "@/components/ui/skeleton"
 import { getUserData } from "@/lib/actions"
 import { authClient } from "@/lib/auth-client"
 
@@ -44,6 +45,7 @@ export function NavUser({
   const { isMobile } = useSidebar()
   const { theme, setTheme } = useTheme()
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(true)
   const [currentUser, setCurrentUser] = useState<{
     name: string
     email: string
@@ -52,6 +54,7 @@ export function NavUser({
 
   useEffect(() => {
     async function fetchUser() {
+      setIsLoading(true)
       try {
         const res = await getUserData()
         if (res?.data) {
@@ -66,6 +69,8 @@ export function NavUser({
         }
       } catch (error) {
         console.error("Failed to fetch user in NavUser:", error)
+      } finally {
+        setIsLoading(false)
       }
     }
     fetchUser()
@@ -88,6 +93,22 @@ export function NavUser({
 
   const handleToggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark")
+  }
+
+  if (isLoading) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <div className="flex h-12 items-center gap-2 px-2">
+            <Skeleton className="size-8 shrink-0 rounded-lg" />
+            <div className="grid flex-1 gap-1.5">
+              <Skeleton className="h-3.5 w-20" />
+              <Skeleton className="h-3 w-28" />
+            </div>
+          </div>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    )
   }
 
   return (
