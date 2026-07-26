@@ -45,27 +45,109 @@ export const getUserData = async () => {
   return websites;
 };
 
-export const addWebsite = async (url: string | null) => {
-  if (!url) {
-    return;
-  }
+export type ProfileUpdateInput = {
+  name?: string;
+  email?: string;
+  image?: string | null;
+  username?: string | null;
+};
+
+export const updateUserProfile = async (payload: ProfileUpdateInput) => {
   const token = await getToken();
   if (!token) {
     redirect("/login");
   }
-  console.log("url adding: ", url);
-  const res = await axios.post(
-    `${API_BASE}/website/create`,
-    {
-      url,
-    },
-    {
-      headers: {
-        Authorization: token,
-      },
+
+  try {
+    const res = await axios.patch(`${API_BASE}/user/me`, payload, {
+      headers: { Authorization: token },
+    });
+    if (res.data?.error) {
+      return { success: false as const, error: res.data.error as string };
     }
-  );
-  return res;
+    return { success: true as const, data: res.data?.data };
+  } catch (error: unknown) {
+    const message =
+      axios.isAxiosError(error) && error.response?.data?.error
+        ? String(error.response.data.error)
+        : "Failed to update profile";
+    return { success: false as const, error: message };
+  }
+};
+
+export const changeUserPassword = async (
+  currentPassword: string,
+  newPassword: string
+) => {
+  const token = await getToken();
+  if (!token) {
+    redirect("/login");
+  }
+
+  try {
+    const res = await axios.post(
+      `${API_BASE}/user/change-password`,
+      { currentPassword, newPassword },
+      { headers: { Authorization: token } }
+    );
+    if (res.data?.error) {
+      return { success: false as const, error: res.data.error as string };
+    }
+    return { success: true as const };
+  } catch (error: unknown) {
+    const message =
+      axios.isAxiosError(error) && error.response?.data?.error
+        ? String(error.response.data.error)
+        : "Failed to change password";
+    return { success: false as const, error: message };
+  }
+};
+
+export const normalizeWebsiteUrl = (raw: string) => {
+  const trimmed = raw.trim();
+  if (!trimmed) return "";
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+};
+
+export const addWebsite = async (url: string | null) => {
+  if (!url) {
+    return { success: false as const, error: "URL is required" };
+  }
+
+  const normalizedUrl = normalizeWebsiteUrl(url);
+  try {
+    // Basic URL validation
+    new URL(normalizedUrl);
+  } catch {
+    return { success: false as const, error: "Enter a valid URL" };
+  }
+
+  const token = await getToken();
+  if (!token) {
+    redirect("/login");
+  }
+
+  try {
+    const res = await axios.post(
+      `${API_BASE}/website/create`,
+      { url: normalizedUrl },
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+
+    if (res.data?.error) {
+      return { success: false as const, error: res.data.error as string };
+    }
+
+    return { success: true as const, data: res.data?.data };
+  } catch (error) {
+    console.error("Failed to add website:", error);
+    return { success: false as const, error: "Failed to add website" };
+  }
 };
 
 export const logout = () => {

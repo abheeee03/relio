@@ -2,7 +2,8 @@ export type WebsiteResponse = {
     id: string,
     ticks: {
         response_ms: string,
-        status: "Up" | "Down" | "Unknown"
+        status: "Up" | "Down" | "Unknown",
+        created_at?: string,
     }[],
     url: string
 }

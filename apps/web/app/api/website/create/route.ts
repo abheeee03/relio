@@ -11,14 +11,21 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { url } = body;
+    let { url } = body as { url?: string };
 
-    console.log("Req recieved for ", url, " and for userId: ", userId);
+    if (!url || typeof url !== "string" || !url.trim()) {
+      return NextResponse.json({ error: "url is required" }, { status: 400 });
+    }
 
-    if (!url) {
-      return NextResponse.json({
-        error: "url is req",
-      });
+    url = url.trim();
+    if (!/^https?:\/\//i.test(url)) {
+      url = `https://${url}`;
+    }
+
+    try {
+      new URL(url);
+    } catch {
+      return NextResponse.json({ error: "invalid url" }, { status: 400 });
     }
 
     const response = await prisma.websites.create({
@@ -34,8 +41,9 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.log(err);
-    return NextResponse.json({
-      error: "something went wrong",
-    });
+    return NextResponse.json(
+      { error: "something went wrong" },
+      { status: 500 }
+    );
   }
 }

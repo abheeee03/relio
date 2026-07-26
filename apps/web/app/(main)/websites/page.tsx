@@ -42,15 +42,21 @@ function WebsitesPage() {
   }, [])
 
   const handleAddWebsite = async () => {
-    if (!newUrl) return
+    if (!newUrl.trim() || isAdding) return
     setIsAdding(true)
     try {
-      await addWebsite(newUrl)
+      const res = await addWebsite(newUrl)
+      if (!res?.success) {
+        toast.error(res?.error || "Failed to add website")
+        return
+      }
+      toast.success("Website added")
       setNewUrl("")
       setIsDialogOpen(false)
       await fetchWebsites()
     } catch (error) {
       console.error("Failed to add website:", error)
+      toast.error("Failed to add website")
     } finally {
       setIsAdding(false)
     }

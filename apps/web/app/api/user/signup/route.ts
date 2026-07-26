@@ -16,6 +16,10 @@ export async function POST(req: Request) {
       data: {
         username,
         password,
+        // Better Auth requires email; legacy signup still uses username/password.
+        email: `${username}@users.local`,
+        name: username,
+        displayUsername: username,
       },
     });
 
