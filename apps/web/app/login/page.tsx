@@ -149,62 +149,11 @@ function LoginPage() {
     }
   };
 
-  const fillDemo = () => {
-    setLoginEmail("abhee@users.local");
-    setLoginPassword("abhee");
-    setTab("login");
-    toast.message("Demo credentials filled in");
-  };
-
   return (
     <div className="relative flex h-screen w-full items-center justify-center tracking-tight">
       <div className="absolute top-5 right-5">
         <ThemeToggleButton start="top-down" variant="rectangle" />
       </div>
-
-      <div className="absolute bottom-5 left-5">
-        {currActive === "BTN" && (
-          <motion.div
-            layoutId="demo-account"
-            onClick={() => setCurrActive("MODAL")}
-            className="relative cursor-pointer rounded-xl border bg-transparent px-5 py-5 backdrop-blur-xl"
-          >
-            <motion.h1 layoutId="demo-head">Use Demo Account</motion.h1>
-          </motion.div>
-        )}
-        {currActive === "MODAL" && (
-          <motion.div
-            layoutId="demo-account"
-            className="relative flex cursor-pointer flex-col items-start justify-center gap-4 rounded-xl border bg-transparent px-5 py-5 backdrop-blur-xl"
-          >
-            <div className="mb-3 flex w-full items-center justify-between">
-              <motion.h1 layoutId="demo-head">Login Using Demo Account</motion.h1>
-              <Button
-                type="button"
-                onClick={() => setCurrActive("BTN")}
-                variant="ghost"
-                size="icon-sm"
-              >
-                <X size={15} />
-              </Button>
-            </div>
-            <div className="flex items-center justify-center gap-3">
-              Email:
-              <Input value="abhee@users.local" readOnly className="w-40" />
-              <CopyButton url="abhee@users.local" />
-            </div>
-            <div className="flex items-center justify-center gap-3">
-              Password:
-              <Input value="abhee" readOnly className="w-28" />
-              <CopyButton url="abhee" />
-            </div>
-            <Button type="button" className="w-full" onClick={fillDemo}>
-              Fill login form
-            </Button>
-          </motion.div>
-        )}
-      </div>
-
       <Card className="w-full max-w-md bg-transparent backdrop-blur-xl">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-semibold">Welcome to Relio</CardTitle>
